@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
+.App {
+  font-family: sans-serif;
+  text-align: center;
+  position: relative;
+}
+
+.Container {
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  width: 60vw;
+  padding: 20px;
+}
+
+.Todos {
+  font-size: large;
+  margin-bottom: 20px;
+}
+
+.Todoapp {
+  align-items: center;
+}
+
+.Paper {
+  max-width: 200px;
+  margin: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.CardAction {
+  padding: 10px;
+}
+
+.Select {
+  width: 150px;
+}
