@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { UpdateTodo } from "./UpdateTodo";
 
 export const TodoDetails = () => {
   const { id } = useParams();
@@ -26,8 +27,11 @@ export const TodoDetails = () => {
 
   return (
     <div className="TodoDetails">
-      {data.text}
       {data.id}
+      <br />
+      Title: {data.text} <br />
+      <UpdateTodo todoData={data} />
+      {console.log(data)}
     </div>
   );
 };

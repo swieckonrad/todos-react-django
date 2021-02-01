@@ -9,61 +9,23 @@ import {
   Container,
 } from "@material-ui/core";
 
-export const UpdateTodo = () => {
-  const [todoTextInput, setTodoText] = useState("");
+export const UpdateTodo = (props) => {
+  const [todoTextInputUpdate, setTodoTextUpdate] = useState("");
   const [todoPriorityUpdate, setPriorityUpdate] = useState();
   const [todoTextInputError, setTodoTextInputError] = useState("");
   const [todoPriorityInputError, setTodoPriorityInputError] = useState("");
 
-  const importanceLevel = ["important", "normal", "not important"];
-
-  // const fetchData = () => {
-  //   axios
-  //     .get("http://localhost:8000/todos/todo")
-  //     .then((response) => {
-  //       setTodos(response.data);
-  //     })
-  //     .catch((error) => {
-  //       if (error.request) {
-  //         alert(error.toString());
-  //       } else {
-  //         throw error;
-  //       }
-  //     });
-  // };
-
-  const fetchTodos = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/todos/todo");
-      setTodos(response.data);
-    } catch (err) {
-      if (!err.request) {
-        throw err;
-      }
-    }
+  const refreshPage = () => {
+    window.location.reload(false);
   };
 
-  // do useEffect nie można podać funkcji async
-  useEffect(() => {
-    fetchTodos();
-  }, []);
+  const importanceLevel = ["important", "normal", "not important"];
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const response = await axios.get("http://localhost:8000/todos/todo");
-  //     setTodos(response.data);
-  //   })();
-  // }, []);
-
-  const handleAddTodo = () => {
+  const handleUpdateTodo = () => {
     axios
-      .post("http://localhost:8000/todos/todo", {
-        text: todoTextInput,
+      .put(`http://localhost:8000/todos/todo/${props.todoData.id}`, {
+        text: todoTextInputUpdate,
         priority: todoPriorityUpdate,
-      })
-      .then((response) => {
-        setTodos((prev) => [...prev, response.data]);
-        // alert(`Dodano todo o id: ${response.data.id}`);
       })
       .catch((error) => {
         if (error.response) {
@@ -74,12 +36,6 @@ export const UpdateTodo = () => {
           if (error.response.data.priority) {
             setTodoPriorityInputError(error.response.data.priority);
           }
-
-          // alert(
-          //   Object.entries(error.response.data)
-          //     .map((e) => e[0] + ": " + e[1])
-          //     .join("\n")
-          // );
         }
         if (!error.request) {
           throw error;
@@ -87,26 +43,28 @@ export const UpdateTodo = () => {
       });
   };
 
-  // dodawanie, usuwanie, modyfikacja, odswiezanie
-
   return (
     <div className="App">
-      <Typography variant="h2">Todos</Typography>
+      <Button variant="outlined" color="secondary">
+        Mark todo as done
+      </Button>
+      <Typography variant="h2">Update Todo: {props.todoData.text}</Typography>
       <Container>
         <div className="Container">
           <TextField
             variant="outlined"
-            label="Input your todo"
+            label={props.todoData.text}
             fullWidth
             error={todoTextInputError !== ""}
             helperText={todoTextInputError}
             onFocus={() => setTodoTextInputError("")}
-            value={todoTextInput}
-            onChange={(event) => setTodoText(event.target.value)}
+            value={todoTextInputUpdate}
+            onChange={(event) => setTodoTextUpdate(event.target.value)}
           />
           <TextField
             className="Select"
             select
+            label={props.todoData.priority}
             variant="outlined"
             error={todoPriorityInputError !== ""}
             helperText={todoPriorityInputError}
@@ -120,7 +78,7 @@ export const UpdateTodo = () => {
           </TextField>
         </div>
       </Container>
-      <Button variant="outlined" color="secondary" onClick={handleAddTodo}>
+      <Button variant="outlined" color="secondary" onClick={handleUpdateTodo}>
         Update Todo
       </Button>
     </div>
