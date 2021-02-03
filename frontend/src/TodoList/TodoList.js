@@ -1,4 +1,4 @@
-import "./App.css";
+import "../App.css";
 import {
   CardActionArea,
   Icon,
@@ -8,8 +8,9 @@ import {
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 
-export const Todo = (props) => {
+export const TodoList = (props) => {
   const history = useHistory();
+
   return (
     <div className="Todoapp">
       <Paper className="Paper" elevation={3}>

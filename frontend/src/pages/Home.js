@@ -1,6 +1,6 @@
-import "./App.css";
+import "../App.css";
 import { useEffect, useState } from "react";
-import { Todo } from "./Todo";
+import { TodoList } from "../TodoList/TodoList";
 import axios from "axios";
 import {
   Typography,
@@ -19,21 +19,6 @@ export const Home = () => {
 
   const importanceLevel = ["important", "normal", "not important"];
 
-  // const fetchData = () => {
-  //   axios
-  //     .get("http://localhost:8000/todos/todo")
-  //     .then((response) => {
-  //       setTodos(response.data);
-  //     })
-  //     .catch((error) => {
-  //       if (error.request) {
-  //         alert(error.toString());
-  //       } else {
-  //         throw error;
-  //       }
-  //     });
-  // };
-
   const fetchTodos = async () => {
     try {
       const response = await axios.get("http://localhost:8000/todos/todo");
@@ -45,18 +30,9 @@ export const Home = () => {
     }
   };
 
-  // do useEffect nie można podać funkcji async
   useEffect(() => {
     fetchTodos();
   }, []);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const response = await axios.get("http://localhost:8000/todos/todo");
-  //     setTodos(response.data);
-  //   })();
-  // }, []);
-
   const handleDeleteEl = async (id) => {
     await axios.delete(`http://localhost:8000/todos/todo/${id}`);
     await fetchTodos();
@@ -70,7 +46,6 @@ export const Home = () => {
       })
       .then((response) => {
         setTodos((prev) => [...prev, response.data]);
-        // alert(`Dodano todo o id: ${response.data.id}`);
       })
       .catch((error) => {
         if (error.response) {
@@ -81,20 +56,12 @@ export const Home = () => {
           if (error.response.data.priority) {
             setTodoPriorityInputError(error.response.data.priority);
           }
-
-          // alert(
-          //   Object.entries(error.response.data)
-          //     .map((e) => e[0] + ": " + e[1])
-          //     .join("\n")
-          // );
         }
         if (!error.request) {
           throw error;
         }
       });
   };
-
-  // dodawanie, usuwanie, modyfikacja, odswiezanie
 
   return (
     <div className="App">
@@ -127,11 +94,15 @@ export const Home = () => {
           </TextField>
         </div>
       </Container>
-      <Button variant="outlined" color="secondary" onClick={handleAddTodo}>
+      <Button variant="outlined" onClick={handleAddTodo}>
         Dodaj
       </Button>
       {todos.map((todo) => (
-        <Todo key={todo.id} todoData={todo} handleRemoveEl={handleDeleteEl} />
+        <TodoList
+          key={todo.id}
+          todoData={todo}
+          handleRemoveEl={handleDeleteEl}
+        />
       ))}
     </div>
   );

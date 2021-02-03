@@ -1,4 +1,4 @@
-import "./App.css";
+import "../App.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -7,6 +7,7 @@ import {
   Button,
   MenuItem,
   Container,
+  Icon,
 } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 
@@ -16,8 +17,7 @@ export const UpdateTodo = (props) => {
   const [textError, setTextError] = useState("");
   const [priorityError, setPriorityError] = useState("");
   const { enqueueSnackbar } = useSnackbar();
-  //mark as done poprawic zeby pokazywalo tylko raz
-  //niech pokazuje ze todo zaktualizowane tylko gdy zmienil sie tekst
+
   const handleUpdateTodo = async () => {
     try {
       const response = await axios.patch(
@@ -27,9 +27,17 @@ export const UpdateTodo = (props) => {
           priority: inputPriority,
         }
       );
-      props.setData(response.data);
-
-      enqueueSnackbar("Todo updated", { variant: "success" });
+      if (
+        props.todoData.text === inputText &&
+        props.todoData.priority === inputPriority
+      ) {
+        enqueueSnackbar("Todo's details weren't changed", {
+          variant: "info",
+        });
+      } else {
+        props.setData(response.data);
+        enqueueSnackbar("Todo updated", { variant: "success" });
+      }
     } catch (error) {
       if (error.response) {
         if (error.response.data.text) {
@@ -55,9 +63,36 @@ export const UpdateTodo = (props) => {
         { done: true }
       );
       props.setData(response.data);
-      enqueueSnackbar("Todo marked as done", {
-        variant: "success",
-      });
+      if (props.todoData.done) {
+        enqueueSnackbar("Todo was already marked as done", { variant: "info" });
+      } else {
+        enqueueSnackbar("Todo marked as done", {
+          variant: "success",
+        });
+      }
+    } catch (error) {
+      if (error.request) {
+        enqueueSnackbar(error.toString(), {
+          variant: "error",
+        });
+      }
+    }
+  };
+
+  const undoTodo = async () => {
+    try {
+      const response = await axios.patch(
+        `http://localhost:8000/todos/todo/${props.todoData.id}`,
+        { done: false }
+      );
+      props.setData(response.data);
+      if (!props.todoData.done) {
+        enqueueSnackbar("Todo was undone", { variant: "info" });
+      } else {
+        enqueueSnackbar("Todo restored to undone", {
+          variant: "success",
+        });
+      }
     } catch (error) {
       if (error.request) {
         enqueueSnackbar(error.toString(), {
@@ -76,9 +111,19 @@ export const UpdateTodo = (props) => {
 
   return (
     <div className="App">
-      <Button variant="outlined" color="secondary" onClick={markTodoAsDone}>
-        Mark todo as done
-      </Button>
+      <div className="div-buttons">
+        <Button
+          className="button-mark-as-done"
+          variant="outlined"
+          color="secondary"
+          onClick={markTodoAsDone}
+        >
+          Mark todo as done <Icon>check</Icon>
+        </Button>
+        <Button variant="outlined" color="primary" onClick={undoTodo}>
+          Mark todo as undone <Icon>undo</Icon>
+        </Button>
+      </div>
       <Typography variant="h2">Update Todo: {props.todoData.text}</Typography>
       <Container>
         <div className="Container">
@@ -109,7 +154,7 @@ export const UpdateTodo = (props) => {
           </TextField>
         </div>
       </Container>
-      <Button variant="outlined" color="secondary" onClick={handleUpdateTodo}>
+      <Button variant="outlined" onClick={handleUpdateTodo}>
         Update Todo
       </Button>
     </div>

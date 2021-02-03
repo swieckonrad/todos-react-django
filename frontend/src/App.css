@@ -37,3 +37,10 @@
 .Select {
   width: 200px;
 }
+
+.div-buttons {
+  display: flex;
+  justify-content: space-between;
+  max-width: 500px;
+  margin: 2vw auto;
+}

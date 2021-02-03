@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { UpdateTodo } from "./UpdateTodo";
+import { UpdateTodo } from "../UpdateTodo/UpdateTodo";
 
 export const TodoDetails = () => {
   const { id } = useParams();
@@ -20,7 +20,6 @@ export const TodoDetails = () => {
     }
   };
 
-  // do useEffect nie można podać funkcji async
   useEffect(() => {
     fetchTodos();
   }, []);
@@ -29,14 +28,25 @@ export const TodoDetails = () => {
     <div className="TodoDetails">
       {data && (
         <div>
-          ID: {data.id}
-          <br />
-          Title: {data.text} <br />
-          Priority: {data.priority} <br />
-          Done: {data.done ? "Yes" : "No"} <br />
           <UpdateTodo todoData={data} setData={setData} />
         </div>
       )}
     </div>
   );
 };
+
+// return (
+//   <div className="TodoDetails">
+//     {data && (
+//       <div>
+//         ID: {data.id}
+//         <br />
+//         Title: {data.text} <br />
+//         Priority: {data.priority} <br />
+//         Done: {data.done ? "Yes" : "No"} <br />
+//         <UpdateTodo todoData={data} setData={setData} />
+//       </div>
+//     )}
+//   </div>
+// );
+// };
