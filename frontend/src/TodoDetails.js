@@ -5,7 +5,7 @@ import { UpdateTodo } from "./UpdateTodo";
 
 export const TodoDetails = () => {
   const { id } = useParams();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState();
 
   const fetchTodos = async () => {
     try {
@@ -27,11 +27,16 @@ export const TodoDetails = () => {
 
   return (
     <div className="TodoDetails">
-      {data.id}
-      <br />
-      Title: {data.text} <br />
-      <UpdateTodo todoData={data} />
-      {console.log(data)}
+      {data && (
+        <div>
+          ID: {data.id}
+          <br />
+          Title: {data.text} <br />
+          Priority: {data.priority} <br />
+          Done: {data.done ? "Yes" : "No"} <br />
+          <UpdateTodo todoData={data} setData={setData} />
+        </div>
+      )}
     </div>
   );
 };
